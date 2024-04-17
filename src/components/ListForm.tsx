@@ -40,7 +40,7 @@ export const ListForm: React.FC<Props> = ({ list, onSubmit }) => {
   });*/
 
   function handleSubmit() {
-    onSubmit({ name, color, type });
+    onSubmit(list ? { ...list, name, color, type } : { name, color, type });
   }
 
   return (

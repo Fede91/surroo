@@ -5,5 +5,5 @@ export default function ListDetailsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main className="mx-auto h-full">{children}</main>;
+  return <main style={{ minHeight: "100vh" }}>{children}</main>;
 }

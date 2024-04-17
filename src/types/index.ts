@@ -1,3 +1,10 @@
+export type Item = {
+  id: string;
+  createdAt: number;
+  text: string;
+  isCompleted?: boolean;
+};
+
 export type List = {
   id: string;
   createdAt: number;
@@ -5,7 +12,7 @@ export type List = {
   icon?: string;
   color: string;
   type: ListTypes;
-  items: [];
+  items: Item[];
 };
 
 export enum ListTypes {

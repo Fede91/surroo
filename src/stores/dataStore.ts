@@ -1,4 +1,4 @@
-import { List } from "@/types";
+import { Item, List, ListTypes } from "@/types";
 import { uniqueId } from "@/utils";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -11,6 +11,10 @@ export interface DataState extends HydratedDataState {
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
   addList: (list: Partial<List>) => void;
+  editList: (list: Partial<List>) => void;
+  addItem: (listId: List["id"], text: string) => void;
+  editItem: (listId: List["id"], item: Partial<Item>) => void;
+  deleteItem: (listId: List["id"], itemId: Item["id"]) => void;
 }
 
 const useDataStore = create<
@@ -30,13 +34,106 @@ const useDataStore = create<
         set((state) => {
           const lists = [...state.lists];
 
+          const items = [];
+          if (list.type === ListTypes.TEXT_AREA) {
+            items.push({
+              id: uniqueId(),
+              createdAt: new Date().getTime(),
+              text: "",
+            });
+          }
+
           lists.push({
             id: uniqueId(),
             createdAt: new Date().getTime(),
             name: list.name,
             color: list.color,
             type: list.type,
+            items,
           } as List);
+
+          return { lists };
+        });
+      },
+      editList: (list: Partial<List>) => {
+        set((state) => {
+          const lists = state.lists.map((l) =>
+            l.id === list.id
+              ? {
+                  ...l,
+                  name: String(list.name),
+                  type: String(list.type),
+                  color: String(list.color),
+                }
+              : l
+          ) as List[];
+
+          return { lists };
+        });
+      },
+      addItem: (listId: List["id"], text: string) => {
+        set((state) => {
+          const lists = [...state.lists];
+
+          for (let i = 0; i < lists.length; i++) {
+            if (lists[i].id === listId) {
+              if (!lists[i].items) {
+                lists[i].items = [];
+              }
+              lists[i].items.push({
+                id: uniqueId(),
+                createdAt: new Date().getTime(),
+                text,
+              } as Item);
+
+              break;
+            }
+          }
+
+          return { lists };
+        });
+      },
+      editItem: (listId: List["id"], item: Partial<Item>) => {
+        set((state) => {
+          const lists = [...state.lists];
+          for (let i = 0; i < lists.length; i++) {
+            if (lists[i].id === listId) {
+              if (!lists[i].items) {
+                lists[i].items = [];
+              }
+
+              for (let j = 0; j < lists[i].items.length; j++) {
+                if (lists[i].items[j].id === item.id) {
+                  if (typeof item.text !== "undefined") {
+                    lists[i].items[j].text = String(item.text);
+                  }
+
+                  if (typeof item.isCompleted !== "undefined") {
+                    lists[i].items[j].isCompleted = item.isCompleted;
+                  }
+
+                  break;
+                }
+              }
+            }
+          }
+
+          return { lists };
+        });
+      },
+      deleteItem: (listId: List["id"], itemId: Item["id"]) => {
+        set((state) => {
+          const lists = [...state.lists];
+
+          for (let i = 0; i < lists.length; i++) {
+            if (lists[i].id === listId) {
+              if (!lists[i].items) {
+                lists[i].items = [];
+              }
+
+              lists[i].items = lists[i].items.filter((i) => i.id !== itemId);
+            }
+          }
 
           return { lists };
         });
