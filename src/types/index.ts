@@ -13,6 +13,7 @@ export type List = {
   color: string;
   type: ListTypes;
   items: Item[];
+  updatedAt?: number;
 };
 
 export enum ListTypes {

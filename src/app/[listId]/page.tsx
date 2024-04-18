@@ -1,52 +1,27 @@
 "use client";
 
 import { AddItemInput } from "@/components/AddItemInput";
-import { AutosizeTextArea } from "@/components/AutosizeTextArea";
 import { Checkbox } from "@/components/Checkbox";
 import { EditableItem } from "@/components/EditableItem";
 import { ListForm } from "@/components/ListForm";
 import { TextAreaItem } from "@/components/TextAreaItem";
 import useDataStore from "@/stores/dataStore";
 import { ListTypes } from "@/types";
-import {
-  AddIcon,
-  CheckCircleIcon,
-  CheckIcon,
-  ChevronLeftIcon,
-  CloseIcon,
-  EditIcon,
-  SettingsIcon,
-} from "@chakra-ui/icons";
+import { AddIcon, ChevronLeftIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  ButtonGroup,
-  Card,
-  CardBody,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  Editable,
-  EditableInput,
-  EditablePreview,
   Flex,
   HStack,
   Heading,
   IconButton,
-  Input,
-  List,
-  ListIcon,
-  ListItem,
   Stack,
-  Text,
-  Textarea,
-  UnorderedList,
-  VStack,
   useDisclosure,
-  useEditableControls,
 } from "@chakra-ui/react";
 import { useParams, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -83,8 +58,6 @@ export default function ListDetails() {
     setIsNewItemVisible(false);
   };
 
-  console.log({ list });
-
   if (!list) {
     return null;
   }
@@ -110,6 +83,7 @@ export default function ListDetails() {
             onClick={() => router.push("/")}
           />
           <Heading as="h4" size="md">
+            {list.icon}
             {list.name}
           </Heading>
         </HStack>
@@ -263,11 +237,17 @@ export default function ListDetails() {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Edit memo list</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Edit memo list</DrawerHeader>
 
           <DrawerBody>
-            <ListForm list={list} onSubmit={editList} />
+            <ListForm
+              list={list}
+              onSubmit={(data) => {
+                editList(data);
+                onEditListModalClose();
+              }}
+              onCancel={onEditListModalClose}
+            />
           </DrawerBody>
         </DrawerContent>
       </Drawer>

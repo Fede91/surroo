@@ -20,8 +20,22 @@ export const ListBox: React.FC<Props> = ({ list, height, onClick }) => {
       justifyContent={"center"}
       onClick={onClick}
       backgroundColor={list.color}
+      borderColor={
+        Number(list.color.split(".")[1]) === 900
+          ? list.color
+          : Number(list.color.split(".")[1]) === 50
+          ? `${list.color.split(".")[0]}.${
+              Number(list.color.split(".")[1]) + 50
+            }`
+          : `${list.color.split(".")[0]}.${
+              Number(list.color.split(".")[1]) + 100
+            }`
+      }
     >
-      <Text>{list.name}</Text>
+      <VStack>
+        {list.icon && <Text fontSize={"4xl"}>{list.icon}</Text>}
+        <Text>{list.name}</Text>
+      </VStack>
     </VStack>
   );
 };

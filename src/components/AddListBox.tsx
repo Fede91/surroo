@@ -21,7 +21,7 @@ const AddListBox = forwardRef<Ref, Props>(({ height, onClick }, ref) => {
       justifyContent={"center"}
       onClick={onClick}
     >
-      <AddIcon boxSize={6} />
+      <AddIcon boxSize={6} opacity={"0.6"} />
     </VStack>
   );
 });

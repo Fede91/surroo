@@ -18,8 +18,9 @@ export const TextAreaItem: React.FC<Props> = ({
   useAutosizeTextArea(textAreaRef.current, currentValue);
 
   useEffect(() => {
+    console.log("update");
     onEditItem(String(debouncedValue));
-  }, [debouncedValue, onEditItem]);
+  }, [debouncedValue]);
 
   return (
     <Textarea

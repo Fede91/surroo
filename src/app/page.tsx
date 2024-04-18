@@ -13,6 +13,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Heading,
   SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -40,6 +41,7 @@ export default function Home() {
 
   return (
     <main style={{ padding: "1rem" }}>
+      <Heading>Surroo</Heading>
       <SimpleGrid columns={[2, null, 3]} spacing="1rem">
         {lists.map((list) => (
           <ListBox
@@ -66,11 +68,18 @@ export default function Home() {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Create new memo list</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">
+            Create new memo list
+          </DrawerHeader>
 
           <DrawerBody>
-            <ListForm onSubmit={addList} />
+            <ListForm
+              onSubmit={(data) => {
+                addList(data);
+                onNewListModalClose();
+              }}
+              onCancel={onNewListModalClose}
+            />
           </DrawerBody>
         </DrawerContent>
       </Drawer>

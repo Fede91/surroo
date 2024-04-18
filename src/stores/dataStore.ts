@@ -49,6 +49,7 @@ const useDataStore = create<
             name: list.name,
             color: list.color,
             type: list.type,
+            icon: list.icon,
             items,
           } as List);
 
@@ -64,6 +65,8 @@ const useDataStore = create<
                   name: String(list.name),
                   type: String(list.type),
                   color: String(list.color),
+                  icon: String(list.icon),
+                  updatedAt: new Date().getTime(),
                 }
               : l
           ) as List[];
@@ -86,6 +89,8 @@ const useDataStore = create<
                 text,
               } as Item);
 
+              lists[i].updatedAt = new Date().getTime();
+
               break;
             }
           }
@@ -95,28 +100,33 @@ const useDataStore = create<
       },
       editItem: (listId: List["id"], item: Partial<Item>) => {
         set((state) => {
-          const lists = [...state.lists];
-          for (let i = 0; i < lists.length; i++) {
-            if (lists[i].id === listId) {
-              if (!lists[i].items) {
-                lists[i].items = [];
-              }
+          const lists = state.lists.map((list) => {
+            if (list.id === listId) {
+              const _list = {
+                ...list,
+                items: (list.items || []).map((listItem) => {
+                  if (listItem.id === item.id) {
+                    const obj = { ...listItem };
 
-              for (let j = 0; j < lists[i].items.length; j++) {
-                if (lists[i].items[j].id === item.id) {
-                  if (typeof item.text !== "undefined") {
-                    lists[i].items[j].text = String(item.text);
+                    if (typeof item.text !== "undefined") {
+                      obj.text = String(item.text);
+                    }
+
+                    if (typeof item.isCompleted !== "undefined") {
+                      obj.isCompleted = item.isCompleted;
+                    }
+
+                    return obj;
+                  } else {
+                    return listItem;
                   }
-
-                  if (typeof item.isCompleted !== "undefined") {
-                    lists[i].items[j].isCompleted = item.isCompleted;
-                  }
-
-                  break;
-                }
-              }
+                }),
+              };
+              return _list;
+            } else {
+              return list;
             }
-          }
+          });
 
           return { lists };
         });
